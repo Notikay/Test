@@ -23,8 +23,8 @@ class Production(models.Model):
 class Set(models.Model):
 	"""Набор"""
 	name = models.CharField("Название набора", max_length = 100)
-	top = models.ManyToManyField(Production, verbose_name = "Товар с типом 'Верх'", limit_choices_to={'type_product': 'TOP'}, related_name = 'top')
-	bottom = models.ManyToManyField(Production, verbose_name = "Товар с типом 'Низ'", limit_choices_to={'type_product': 'BOTTOM'}, related_name = 'bottom')
+	top = models.ManyToManyField(Production, verbose_name = "Товар с типом 'Верх'", limit_choices_to={'type_product': 'TOP'}, related_name = 'top', blank=True)
+	bottom = models.ManyToManyField(Production, verbose_name = "Товар с типом 'Низ'", limit_choices_to={'type_product': 'BOTTOM'}, related_name = 'bottom', blank=True)
 
 	def __str__(self):
 		return self.name
