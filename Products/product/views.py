@@ -6,6 +6,16 @@ from .serializers import ResultListSerializer
 from .models import Production, Set
 from collections import namedtuple
 
+productions = Production.objects.order_by('name').all()
+sets = Set.objects.order_by('name').all()
+
+Result = namedtuple('Result', ('productions', 'sets'))
+result = Result(
+	productions = productions,
+	sets = sets
+	)
+serializer = ResultListSerializer(result)
+
 class LinkHeaderPagination(pagination.PageNumberPagination):
 
 	def get_paginated_response(self, data):
@@ -29,22 +39,9 @@ class LinkHeaderPagination(pagination.PageNumberPagination):
 class ResultListView(viewsets.ViewSet):
 
 	def list(self, request, *args, **kwargs):
-		Result = namedtuple('Result', ('productions', 'sets'))
-		result = Result(
-			productions = Production.objects.all(),
-			sets = Set.objects.all()
-			)
-		serializer = ResultListSerializer(result)
-
-		for el in serializer.data['sets']:
-			serializer.data['productions'].append(el)
-		serializer.data['sets'].clear()
-
-		data = sorted(serializer.data['productions'], key=lambda x: x['name'])
-
 		paginator = LinkHeaderPagination()
-		page = paginator.paginate_queryset(data, request)
+		page = paginator.paginate_queryset(serializer.data['productions']+serializer.data['sets'], request)
 
 		if page is not None:
 			return paginator.get_paginated_response(page)
-		return Response(data)
+		return Response(serializer.data['productions']+serializer.data['sets'])
