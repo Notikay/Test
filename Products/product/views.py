@@ -55,14 +55,14 @@ class ResultListView(viewsets.ViewSet):
 
 		# Вывод данных Set.
 		elif (prod_end - Production.objects.count() >= 5):
-			productions = Production.objects.order_by('name').all()[0:0]
+			productions = []
 			sets = Set.objects.order_by('name').all()[set_range[0]:set_range[1]]
 			set_range[0], set_range[1] = objectRangeSet(set_range[0], set_range[1])
 
 		# Вывод данных Production.
 		else:
 			productions = Production.objects.order_by('name').all()[prod_start:prod_end]
-			sets = Set.objects.order_by('name').all()[0:0]
+			sets = []
 
 		# Запись результатов полученных данных.
 		result = Result(
